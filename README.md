@@ -3,26 +3,10 @@
 
 > A Vue.js project
 
-## Build Setup
+##  参看 package.json
 
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
  
->>>>>>> 4a829b24cc0a4e12cc653e1364df5daf70e9ebd4
+ 
+ 
+ 
+>>>>>>> 
