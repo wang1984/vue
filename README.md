@@ -1,9 +1,1 @@
-<<<<<<< HEAD
-# sell
-
-> A Vue.js project
-
-## go look package.json
-
-  
->>>>>>> 
+# vue 项目 
