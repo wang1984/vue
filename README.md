@@ -3,7 +3,7 @@
 
 > A Vue.js project
 
-## Çë²Î¿¼ package.json
+## go look package.json
 
   
 >>>>>>> 
