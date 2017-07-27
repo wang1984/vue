@@ -17,7 +17,7 @@
 	                 <ul>
 	    				 <li v-for="food in item.foods" class="food-item border-1px">
 	    				 	 <div class="icon" >
-	    				 	 	<img :src="food.icon" width="57" height="57" >
+	    				 	 	<img :src="food.icon" width="57" height="57">
 	    				 	 </div>
 	    				 	 <div class="content">
 	    				 	    <h2 class="name">{{food.name}}</h2>
@@ -35,17 +35,23 @@
 		    				 	    	￥{{food.oldPrice}}
 		    				 	    </span>
 		    				 	</div>
-		    				  </div>  	 
+		    				 	<div class="cartcontrol-wrapper">
+		    				 		<cartcontrol :food="food"></cartcontrol>
+		    				 	</div>
+		    				 </div>  	 
 	    				 </li>
 	    			 </ul>   			
 				</li>
 			</ul>
 		</div> 
+		<shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
 	</div>
 </template>
  
 <script>
 import BScroll from 'better-scroll';
+import shopcart from 'components/shopcart/shopcart.vue'
+import cartcontrol from 'components/cartcontrol/cartcontrol.vue'
 
 const ERR_OK =0;
 export default {
@@ -60,6 +66,10 @@ export default {
         	listenHeight:[],
         	scrollY:0
         };
+    },
+    components:{
+      shopcart,
+      cartcontrol
     },
     created(){
       this.classMap=['discrease','discount','special','invoice','guarantee'];	
@@ -95,7 +105,8 @@ export default {
 	   	 		 click:true   // 让他可以传递ckick事件                      
 	   	 	});                                     
 	   	 	this.foodsScroll = new BScroll(this.$els.foodsWrapper,{
-	   	 		 probeType:3                        
+	   	 		 probeType:3,
+	   	 		 click:true                        
 	   	 	});
 	   	 	this.foodsScroll.on('scroll',(pos)=>{
 	           this.scrollY=Math.abs(Math.round(pos.y))
@@ -276,5 +287,10 @@ export default {
 		text-decoration: line-through;
 		font-size: 10px;
 		color: rgb(147,153,159)
-	}	 
+	}	
+	.cartcontrol-wrapper{
+		position: absolute;
+		right: 0;
+		bottom:12px;
+	} 
 </style>
