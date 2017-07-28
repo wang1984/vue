@@ -17,7 +17,7 @@
 			 	 		 另需配送费￥{{deliveryPrice}}元
 			 	 	</div> 
 			 	</div> 
-			 	<div class="content-right">
+			 	<div class="content-right" @click.stop="pay()">
 			 	 	<div class="pay" :class="payclass">
 			 	 		 {{paydesc}}
 			 	 	</div>
@@ -47,6 +47,9 @@
 				</ul>
 			</div>
 		</div>
+	</div>
+	<div class="list-mask" @click="hidelist()" v-show="listShow" transition="fade">
+		
 	</div>
 </template> 
 
@@ -191,6 +194,15 @@ export default {
     		this.selectFoods.forEach((food)=>{
     			food.count=0
     		})
+    	},
+    	hidelist(){
+    		this.fold=true;
+    	},
+    	pay(){
+    		if(this.totalPrice < this.minPrice){
+    			return;
+    		}
+    		window.alert('支付'+this.totalPrice+'元')
     	}
     }/*,
     transitions:{
@@ -438,4 +450,26 @@ export default {
 	 	right:0px;
 	 	bottom:11px;
 	 }
+
+
+	 .list-mask{
+	 	position: fixed;
+	 	top:0;
+	 	left:0;
+	 	width: 100%;
+	 	height: 100%;
+	 	z-index: 40;
+	 	backdrop-filter:blur(10px);
+
+	 }
+	 .list-mask.fade-transition{
+        opacity:1;
+        background: rgba(7,17,27,0.6);
+		transition: all 0.4s
+	 }
+     .list-mask.fade-enter,.list-mask.fade-leave{
+		opacity: 0;
+		background: rgba(7,17,27,0);
+     }
+
 </style>
