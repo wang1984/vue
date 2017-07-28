@@ -44,7 +44,7 @@
 				</li>
 			</ul>
 		</div> 
-		<shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+		<shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" v-ref:shopcart></shopcart>
 	</div>
 </template>
  
@@ -97,7 +97,19 @@ export default {
 
  		}
  		return 0;
- 	} 
+ 	 },
+ 	 selectFoods(){
+ 	 	let foods=[];
+ 	 	this.goods.forEach((good)=>{
+ 	 		good.foods.forEach((food)=>{
+ 	 			if(food.count)//这个count属性是由于 cartcontrol组件 为food对象添加的
+ 	 			{
+ 	 				foods.push(food);
+ 	 			}
+ 	 		})
+ 	 	})
+ 	 	return foods;
+ 	 } 
    },
    methods:{
    	 _initScroll(){
@@ -132,8 +144,17 @@ export default {
         let foodList=this.$els.foodsWrapper.getElementsByClassName('food-list-hook');
         let el =foodList[index];
         this.foodsScroll.scrollToElement(el,300)
-   	  }  
-   }
+   	  },
+   	  _drop(target){
+           //父组件调用子组件的事件
+           this.$refs.shopcart.drop(target); 
+   	  } 
+   },
+ 	events:{
+ 		'cart.add':function(target){
+ 			this._drop(target);
+ 		}
+ 	}  
 }
 </script>
 

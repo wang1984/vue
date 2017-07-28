@@ -1,6 +1,6 @@
 <template>
 	<div class="shopcart">
-		 <div class="content">
+		 <div class="content" @click="toggleList()">
 			 	<div class="content-left">
 			 	 	<div class="logo-wrapper">
 			 	 		<div class="logo" :class="{'highlight':totalCount>0}">
@@ -22,12 +22,65 @@
 			 	 		 {{paydesc}}
 			 	 	</div>
 			 	</div> 
-		 </div> 
+		 </div>
+		 <!-- <div class="ball-container">
+		 	 <div v-for="ball in balls" v-show="ball.show" transition="drop" class="ball">
+		 	 	 <div class="inner inner-hook"></div>
+		 	 </div>
+		 </div>  -->
+		<div class="shopcart-list" v-show="listShow" transition="fold">
+			<div class="list-header">
+				<h1 class="title">购物车</h1>
+				<span class="empty" @click="empty()">清空</span>
+			</div>
+			<div class="list-content" v-el:list-content>
+				<ul>
+					<li class="food border-1px" v-for="food in selectFoods">
+						<span class="name">{{food.name}}</span>
+						<div class="price">
+							<span>￥{{food.price * food.count}}</span>
+						</div>
+    					<div class="cartcontrol-wrapper">
+    						<cartcontrol :food="food"></cartcontrol>
+    					</div>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </template> 
 
 <script>
+import cartcontrol from 'components/cartcontrol/cartcontrol.vue'
+import BScroll from 'better-scroll';
+
 export default {
+    data(){
+        return {
+        	/*balls:[
+        		{
+        			show:false,
+        		},
+        		{
+        			show:false,
+        		},
+        		{
+        			show:false,
+        		},
+        		{
+        			show:false,
+        		},
+        		{
+        			show:false,
+        		}
+        	],
+        	dropBall:[]*/
+        	fold:true
+        } 
+	},	
+	components:{
+      cartcontrol
+    },
    props:{
    		selectFoods:{
    			type:Array,
@@ -92,8 +145,94 @@ export default {
     		{
                 return 'enough'
     		}
+    	},
+    	listShow(){
+    		if(!this.totalCount)
+    		{
+    			this.fold=true;
+    			return false;
+    		}
+    		let show = !this.fold;
+    		if(show)
+    		{
+    		  this.$nextTick(()=>{  //vue的dom变化是在$nextTick方法后执行的 
+            	if(!this.scroll)
+            	 {
+            	 	this.scroll = new BScroll(this.$els.listContent,{
+	   	 		      click:true                   
+	   	 	        }); 
+            	 }   
+              })
+    		} 
+    		return show;
     	}
-    } 
+    },
+    methods:{
+    	drop(el){
+            /*for(let i= 0;i<this.balls.length;i++){
+           		let ball =this.balls[i]
+				if(!ball.show)
+				{
+					ball.show = true;
+					ball.el=el;
+					this.dropBall.push(ball);
+					return ;
+				}          			
+           }   */
+           console.log(el)
+    	},
+    	toggleList(){
+    		if(!this.totalCount){
+    			return ;
+    		}
+    		this.fold=!this.fold;	
+    	},
+    	empty(){
+    		this.selectFoods.forEach((food)=>{
+    			food.count=0
+    		})
+    	}
+    }/*,
+    transitions:{
+    	drop:{
+    		beforeEnter(el){
+    			let count= this.balls.length;
+    			while(count--){
+    				let ball =this.balls[count];
+    				if(ball.show)
+    				{
+    					let  rect =ball.el.getBoundingClientRect();
+    					let x=rect.left-32;
+    					let y=-(window.innerHeight- rect.top -22);
+    					el.style.display='';
+    					el.style.webkitTransform=`translate3d(0,${y}px,0)`;
+    					el.style.transform=`translate3d(0,${y}px,0)`;
+    					let inner =el.getElementsByClassName('inner-hook')[0];
+    					inner.style.webkitTransform=`translate3d(0,${x}px,0)`;
+    					inner.style.transform=`translate3d(0,${x}px,0)`;
+    				}
+    			}
+    		},
+    		enter(el){
+    			let rf = el.offsetHeight;
+    			this.$nextTick(()=>{
+    				el.style.webkitTransform='translate3d(0,0,0)';
+					el.style.transform='translate3d(0,0,0)';
+					let inner =el.getElementsByClassName('inner-hook')[0];
+					inner.style.webkitTransform='translate3d(0,0,0)';
+    				inner.style.transform='translate3d(0,0,0)';
+    			})
+    		},
+    		afterEnter(el){
+    			let ball =this.dropBalls.shift()
+    			if(ball)
+    			{
+    				ball.show=false;
+    				el.style.display='none'	
+    			}
+    		}	
+    	}
+    }*/
 }	
 </script>
 
@@ -206,5 +345,97 @@ export default {
 	 .content .content-right .pay.enough{
 	 	background-color: #00b43c;
 	 	color: #fff
+	 }
+
+	 /* .ball-container{
+	 
 	 } 
+	 .ball{
+	 	position: fixed;
+	 	left:32px;
+	 	bottom:22px;
+	 	z-index:200;
+	 }
+	 .drop-transition{
+	 	transition: all 0.4s;
+	 	transition:all 0.4s cubic-bezier(0.49,-0.29,0.75,0.41);
+	 }
+	 .inner{
+	 	width: 16px;
+	 	height: 16px;
+	 	border-radius: 50%;
+	 	background: rgb(0,160,220);
+	 	transition: all 0.4s linear;
+	 } */
+     .shopcart-list{
+     	position: absolute;
+        top:0;
+        left:0;
+        z-index:-1;
+        width: 100%;
+     } 
+     .fold-transition{
+     	transition: all 0.5s;
+     	transform: translate3d(0,-100%,0);	
+     }
+     .fold-enter,.fold-leave{
+     	transform: translate3d(0,0,0);
+     }
+     .list-header{
+     	height: 40px;
+     	line-height: 40px;
+     	padding: 0 18px;
+     	background: #eee;
+     	border-bottom:1px solid rgba(7,17,27,0.1);
+     }
+     .list-header .title{
+		float: left;
+		font-size: 14px;
+		color: rgb(7,17,27)
+     }
+     .list-header .empty{
+        float: right;
+        font-size: 12px;
+        color: rgb(0,160,220)
+     }
+	 .list-content{
+	 	pading:18px;
+	 	max-height: 217px;
+	 	background: #fff;
+	 	overflow:hidden;
+
+	 }
+	 .list-content .food{
+		position: relative;
+		padding: 12px 0;
+		box-sizing: border-box;
+	 }
+	 .list-content .food:after{
+	 	display: block;
+   		position: absolute;
+   		left:0;
+   		bottom:0;
+   		width: 100%;
+   		border-top: 1px solid #C1BFBF;
+   		content:''; 
+	 }
+	 .food .name{
+	 	line-height: 24px;
+	 	font-size: 14px;
+	 	color: rgb(7,17,27);
+	 }
+	 .food .price{
+	 	position: absolute;
+	 	right: 90px;
+	 	bottom:12px;
+	 	line-height: 24px;
+	 	font-size:14px;
+	 	font-weight: 700;
+	 	color: rgb(240,20,20)
+	 }
+	 .food .cartcontrol-wrapper{
+	 	position: absolute;
+	 	right:0px;
+	 	bottom:11px;
+	 }
 </style>
